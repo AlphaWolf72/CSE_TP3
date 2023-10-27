@@ -140,7 +140,15 @@ public class AirSimulation
    // Agent4: the virus
    public void agent4() throws InterruptedException
    {
-      // updating counter
+      for (int i = 0; i < this.a.getNumberOfRows(); i++)
+      {
+         for (int j = 0; j < this.a.getSeatsPerRow(); j++)
+         {
+            Customer c = this.a.getCustomer(i,j);
+            this.a.freeSeat(i,j);
+            if (c != null) this.a.add(c,i,j);
+         }
+      }
       this.nAgent4++;
    }
 
