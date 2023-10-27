@@ -86,7 +86,7 @@ public class AirSimulation
             // verifying whether the seat is free
             if (this.a.isSeatEmpty(row,col))
             {
-               // if this is an emergency exit seat, and c needs assistence, then we skip
+               // if this is an emergency exit seat, and c needs assistance, then we skip
                if (!emergRows.contains(row) || !c.needsAssistence() || this.a.numberOfFreeSeats() <= this.a.getSeatsPerRow() * this.a.getNumberEmergencyRows())
                {
                   this.a.add(c,row,col);
@@ -206,11 +206,11 @@ public class AirSimulation
       }
    }
 
-   // Simulation in sequential (main)
-   /*
+   // Simulation in parallel (main)
    public static void main(String[] args) throws InterruptedException
    {
       System.out.println("\n** Sequential execution **\n");
+      long startSequentitalExec = System.currentTimeMillis();
       if (args != null && args.length > 0 && args[0] != null && args[0].equals("animation"))
       {
          AirSimulation s = new AirSimulation();
@@ -237,12 +237,12 @@ public class AirSimulation
          }
          System.out.println(s);
       }
-   }*/
+      long endSequentialExec = System.currentTimeMillis();
+      long sequentialExec = endSequentialExec - startSequentitalExec;
+      System.out.println("Sequential execution time: " + sequentialExec);
 
-   // Simulation in parallel (main)
-   public static void main(String[] args) throws InterruptedException
-   {
       System.out.println("\n** Parallel execution **\n");
+      long startParallelExec = System.currentTimeMillis();
       if (args != null && args.length > 0 && args[0] != null && args[0].equals("animation"))
       {
          AirSimulation s = new AirSimulation();
@@ -276,6 +276,10 @@ public class AirSimulation
          }
          System.out.println(s);
       }
+      long endParallelExec = System.currentTimeMillis();
+      long parallelExec = endParallelExec - startParallelExec;
+
+      System.out.println("Parallel execution time: " + parallelExec);
    }
 }
 
