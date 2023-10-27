@@ -163,7 +163,51 @@ public class AirSimulation
       return print;
    }
 
+   class Agent extends Thread{
+
+      private Thread t;
+      private String nameAgent;
+      private AirSimulation s;
+
+      public Agent(String nameAgent, AirSimulation s){
+         this.nameAgent = nameAgent;
+         this.s = s;
+      }
+
+      @Override
+      public void run(){
+         try{
+            switch(nameAgent){
+               case "Agent2":
+                  while (!s.getAircraftRef().isFlightFull()){
+                     s.agent2();
+                  }
+                  break;
+               case "Agent3":
+                  while (!s.getAircraftRef().isFlightFull()){
+                     s.agent3();
+                  }
+                  break;
+               case "Agent4":
+                  while (!s.getAircraftRef().isFlightFull()){
+                     s.agent4();
+                  }break;
+            }
+         }catch(InterruptedException e){
+            e.printStackTrace();
+         }
+      }
+
+      public void start(){
+         if(t == null){
+            t = new Thread(this, nameAgent);
+            t.start();
+         }
+      }
+   }
+
    // Simulation in sequential (main)
+   /*
    public static void main(String[] args) throws InterruptedException
    {
       System.out.println("\n** Sequential execution **\n");
@@ -190,6 +234,45 @@ public class AirSimulation
             s.agent2();
             s.agent3();
             s.agent4();
+         }
+         System.out.println(s);
+      }
+   }*/
+
+   // Simulation in parallel (main)
+   public static void main(String[] args) throws InterruptedException
+   {
+      System.out.println("\n** Parallel execution **\n");
+      if (args != null && args.length > 0 && args[0] != null && args[0].equals("animation"))
+      {
+         AirSimulation s = new AirSimulation();
+         Agent agent2 = s.new Agent("Agent2", s);
+         Agent agent3 = s.new Agent("Agent3", s);
+         Agent agent4 = s.new Agent("Agent4", s);
+         agent2.start();
+         agent3.start();
+         agent4.start();
+         while (!s.getAircraftRef().isFlightFull())
+         {
+            s.agent1();
+            System.out.println(s + s.getAircraftRef().cleanString());
+            Thread.sleep(100);
+         }
+         System.out.println(s);
+      }
+      else
+      {
+         AirSimulation s = new AirSimulation();
+         Agent agent2 = s.new Agent("Agent2", s);
+         Agent agent3 = s.new Agent("Agent3", s);
+         Agent agent4 = s.new Agent("Agent4", s);
+
+         agent2.start();
+         agent3.start();
+         agent4.start();
+         while (!s.getAircraftRef().isFlightFull())
+         {
+            s.agent1();
          }
          System.out.println(s);
       }
