@@ -107,16 +107,40 @@ public class AirSimulation
    {
       Random R = new Random();
 
-      // to be completed ...
+      int row = 0;
+      int col = 0;
+      int row2 = 0;
+      int col2 = 0;
 
+      // randomly pick a seat
+      while (this.a.isSeatEmpty(row,col) || this.a.isSeatEmpty(row2,col2))
+      {
+         row = R.nextInt(this.a.getNumberOfRows());
+         col = R.nextInt(this.a.getSeatsPerRow());
+         row2 = R.nextInt(this.a.getNumberOfRows());
+         col2 = R.nextInt(this.a.getSeatsPerRow());
+      }
+
+      // generating a new Customer
+      Customer c = this.a.getCustomer(row,col);
+      Customer c2 = this.a.getCustomer(row2,col2);
+
+      // checking frequent flyer numbers
+      if (c.getFlyerLevel() > c2.getFlyerLevel())
+      {
+         this.a.freeSeat(row,col);
+         this.a.freeSeat(row2,col2);
+         this.a.add(c,row2,col2);
+         this.a.add(c2,row,col);
+      }
+      // updating counter
       this.nAgent3++;
    }
 
    // Agent4: the virus
    public void agent4() throws InterruptedException
    {
-      // to be completed ...
-
+      // updating counter
       this.nAgent4++;
    }
 
@@ -134,7 +158,7 @@ public class AirSimulation
    public String toString()
    {
       String print = "AirSimulation (agent1 : " + this.nAgent1 + ", agent2 : " + this.nAgent2 + ", " +
-                                    "agent3 : " + this.nAgent3 + ", agent4 : " + this.nAgent4 + ")\n";
+              "agent3 : " + this.nAgent3 + ", agent4 : " + this.nAgent4 + ")\n";
       print = print + a.toString();
       return print;
    }
