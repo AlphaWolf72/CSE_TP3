@@ -8,6 +8,7 @@
 
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 public class AirSimulation
 {
@@ -16,6 +17,7 @@ public class AirSimulation
    private int nAgent3;
    private int nAgent4;
    private Aircraft a;
+   private Semaphore sem = new Semaphore(1);
    public final int nagents = 4;
 
    // Constructor
@@ -184,25 +186,48 @@ public class AirSimulation
 
       @Override
       public void run(){
-         try{
-            switch(nameAgent){
-               case "Agent2":
-                  while (!s.getAircraftRef().isFlightFull()){
-                     s.agent2();
+         switch(nameAgent){
+            case "Agent2":
+               while (!s.getAircraftRef().isFlightFull()){
+                  try{
+                     s.sem.acquire();
+                     try{
+                        s.agent2();
+                     }finally{
+                        s.sem.release();
+                     }
+                  }catch(InterruptedException e){
+                     e.printStackTrace();
                   }
-                  break;
-               case "Agent3":
-                  while (!s.getAircraftRef().isFlightFull()){
-                     s.agent3();
+               }
+               break;
+            case "Agent3":
+               while (!s.getAircraftRef().isFlightFull()){
+                  try{
+                     s.sem.acquire();
+                     try{
+                        s.agent3();
+                     }finally{
+                        s.sem.release();
+                     }
+                  }catch(InterruptedException e){
+                     e.printStackTrace();
                   }
-                  break;
-               case "Agent4":
-                  while (!s.getAircraftRef().isFlightFull()){
-                     s.agent4();
-                  }break;
-            }
-         }catch(InterruptedException e){
-            e.printStackTrace();
+               }
+               break;
+            case "Agent4":
+               while (!s.getAircraftRef().isFlightFull()){
+                  try{
+                     s.sem.acquire();
+                     try{
+                        s.agent4();
+                     }finally{
+                        s.sem.release();
+                     }
+                  }catch(InterruptedException e){
+                     e.printStackTrace();
+                  }
+               }break;
          }
       }
 
@@ -262,7 +287,16 @@ public class AirSimulation
          agent4.start();
          while (!s.getAircraftRef().isFlightFull())
          {
-            s.agent1();
+            try{
+               s.sem.acquire();
+               try{
+                  s.agent1();
+               }finally{
+                  s.sem.release();
+               }
+            }catch(InterruptedException e){
+               e.printStackTrace();
+            }
             System.out.println(s + s.getAircraftRef().cleanString());
             Thread.sleep(100);
          }
@@ -280,7 +314,16 @@ public class AirSimulation
          agent4.start();
          while (!s.getAircraftRef().isFlightFull())
          {
-            s.agent1();
+            try{
+               s.sem.acquire();
+               try{
+                  s.agent1();
+               }finally{
+                  s.sem.release();
+               }
+            }catch(InterruptedException e){
+               e.printStackTrace();
+            }
          }
          System.out.println(s);
       }
